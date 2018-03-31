@@ -2,6 +2,7 @@
 'use strict';
 
 var React = require("react");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("Header");
@@ -10,7 +11,13 @@ function text(prim) {
   return prim;
 }
 
-function make() {
+function navLinkClassList(page, linkToPage) {
+  return "nav-link " + (
+          Caml_obj.caml_equal(page, linkToPage) ? "active" : ""
+        );
+}
+
+function make(currentPage, _) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
       return React.createElement("nav", {
@@ -25,27 +32,27 @@ function make() {
                         }, React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
-                                  className: "nav-link active",
-                                  href: ""
+                                  className: navLinkClassList(currentPage, /* Home */0),
+                                  href: "#home"
                                 }, "Home")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
-                                  className: "nav-link",
-                                  href: ""
+                                  className: navLinkClassList(currentPage, /* NewPost */1),
+                                  href: "#newPost"
                                 }, React.createElement("i", {
                                       className: "ion-compose"
                                     }), "New post")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
-                                  className: "nav-link",
-                                  href: ""
+                                  className: navLinkClassList(currentPage, /* Settings */2),
+                                  href: "#settings"
                                 }, React.createElement("i", {
                                       className: "ion-gear-a"
                                     }), "Settings")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
-                                  className: "nav-link",
-                                  href: ""
+                                  className: navLinkClassList(currentPage, /* SignUp */3),
+                                  href: "#signUp"
                                 }, "Sign up")))));
     });
   return newrecord;
@@ -53,5 +60,6 @@ function make() {
 
 exports.component = component;
 exports.text = text;
+exports.navLinkClassList = navLinkClassList;
 exports.make = make;
 /* component Not a pure module */
