@@ -13,7 +13,7 @@ let initialPage = () =>
   | "newPost" => NewPost
   | "settings" => Settings
   | "signUp" => SignUp
-  | _ => Unknown
+  | _ => Home
   };
 
 let make = _children => {
