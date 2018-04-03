@@ -7,15 +7,13 @@ let make = (~page, _children) => {
   render: _self =>
     <div>
       (
-        ReasonReact.stringToElement(
-          switch (page) {
-          | Home => "home"
-          | NewPost => "new post"
-          | Settings => "settings"
-          | SignUp => "sign up"
-          | Unknown => "unknown path"
-          },
-        )
+        switch (page) {
+        | Home => <Home />
+        | NewPost => ReasonReact.stringToElement("new post")
+        | Settings => ReasonReact.stringToElement("settings")
+        | SignUp => ReasonReact.stringToElement("sign up")
+        | Unknown => ReasonReact.stringToElement("unknown path")
+        }
       )
     </div>,
 };
