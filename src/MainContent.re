@@ -8,7 +8,7 @@ let make = (~state: state, _children) => {
     <div>
       (
         switch (state.currentPage) {
-        | Home => <Home articles=state.articleList />
+        | Home => <Home state />
         | NewPost => ReasonReact.stringToElement("new post")
         | Settings => ReasonReact.stringToElement("settings")
         | SignUp => ReasonReact.stringToElement("sign up")

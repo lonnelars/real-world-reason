@@ -7,7 +7,12 @@ type articleList =
   | Loaded(articlesObject)
   | Error(Js.Promise.error);
 
+type logInStatus =
+  | NotLoggedIn
+  | LoggedIn(user);
+
 type state = {
   currentPage: page,
+  user: logInStatus,
   articleList,
 };

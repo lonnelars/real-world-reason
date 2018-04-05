@@ -33,26 +33,26 @@ function make(currentPage, _) {
                               className: "nav-item"
                             }, React.createElement("a", {
                                   className: navLinkClassList(currentPage, /* Home */0),
-                                  href: "#home"
+                                  href: "#/home"
                                 }, "Home")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
                                   className: navLinkClassList(currentPage, /* NewPost */1),
-                                  href: "#newPost"
+                                  href: "#/newPost"
                                 }, React.createElement("i", {
                                       className: "ion-compose"
                                     }), "New post")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
                                   className: navLinkClassList(currentPage, /* Settings */2),
-                                  href: "#settings"
+                                  href: "#/settings"
                                 }, React.createElement("i", {
                                       className: "ion-gear-a"
                                     }), "Settings")), React.createElement("li", {
                               className: "nav-item"
                             }, React.createElement("a", {
                                   className: navLinkClassList(currentPage, /* SignUp */3),
-                                  href: "#signUp"
+                                  href: "#/signUp"
                                 }, "Sign up")))));
     });
   return newrecord;

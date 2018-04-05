@@ -22,9 +22,19 @@ let articlePreview = article =>
     </a>
   </div>;
 
+let yourFeed = () =>
+  <li className="nav-item">
+    <a className="nav-link" href=""> (text("Your Feed")) </a>
+  </li>;
+
+let globalFeed = () =>
+  <li className="nav-item">
+    <a className="nav-link active" href=""> (text("Global Feed")) </a>
+  </li>;
+
 let component = ReasonReact.statelessComponent("Home");
 
-let make = (~articles: State.articleList, _children) => {
+let make = (~state: State.state, _children) => {
   ...component,
   render: _self =>
     <div className="home-page">
@@ -39,21 +49,19 @@ let make = (~articles: State.articleList, _children) => {
           <div className="col-md-9">
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
-                <li key="your-feed" className="nav-item">
-                  <a className="nav-link disabled" href="">
-                    (text("Your Feed"))
-                  </a>
-                </li>
-                <li key="global-feed" className="nav-item">
-                  <a className="nav-link active" href="">
-                    (text("Global Feed"))
-                  </a>
-                </li>
+                (
+                  switch (state.user) {
+                  | NotLoggedIn => globalFeed()
+                  | LoggedIn(user) =>
+                    yourFeed();
+                    globalFeed();
+                  }
+                )
               </ul>
             </div>
             <ul>
               (
-                switch (articles) {
+                switch (state.articleList) {
                 | Loading => <p> (text("Loading...")) </p>
                 | Loaded(articlesObject) =>
                   Array.map(

@@ -14,10 +14,10 @@ let component = ReasonReact.reducerComponent("App");
 
 let initialPage = () =>
   switch (ReasonReact.Router.dangerouslyGetInitialUrl().hash) {
-  | "home" => Home
-  | "newPost" => NewPost
-  | "settings" => Settings
-  | "signUp" => SignUp
+  | "/home" => Home
+  | "/newPost" => NewPost
+  | "/settings" => Settings
+  | "/signUp" => SignUp
   | _ => Home
   };
 
@@ -25,9 +25,22 @@ let make = _children => {
   ...component,
   didMount: self => {
     self.send(FetchArticles);
+    ReasonReact.Router.push(
+      switch (self.state.currentPage) {
+      | Home => "#/home"
+      | NewPost => "#/newPost"
+      | Settings => "#/settings"
+      | SignUp => "#/signUp"
+      | _ => "#/home"
+      },
+    );
     ReasonReact.NoUpdate;
   },
-  initialState: () => {currentPage: initialPage(), articleList: Loading},
+  initialState: () => {
+    currentPage: initialPage(),
+    user: NotLoggedIn,
+    articleList: Loading,
+  },
   reducer: (action, state) =>
     switch (action) {
     | FetchArticles =>
@@ -72,10 +85,10 @@ let make = _children => {
       () =>
         ReasonReact.Router.watchUrl(url =>
           switch (url.hash) {
-          | "home" => self.send(PathChanged(Home))
-          | "newPost" => self.send(PathChanged(NewPost))
-          | "settings" => self.send(PathChanged(Settings))
-          | "signUp" => self.send(PathChanged(SignUp))
+          | "/home" => self.send(PathChanged(Home))
+          | "/newPost" => self.send(PathChanged(NewPost))
+          | "/settings" => self.send(PathChanged(Settings))
+          | "/signUp" => self.send(PathChanged(SignUp))
           | _ => self.send(PathChanged(Unknown))
           }
         ),
