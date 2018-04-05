@@ -1,14 +1,14 @@
-include Page;
+open State;
 
 let component = ReasonReact.statelessComponent("MainContent");
 
-let make = (~page, _children) => {
+let make = (~state: state, _children) => {
   ...component,
   render: _self =>
     <div>
       (
-        switch (page) {
-        | Home => <Home />
+        switch (state.currentPage) {
+        | Home => <Home articles=state.articleList />
         | NewPost => ReasonReact.stringToElement("new post")
         | Settings => ReasonReact.stringToElement("settings")
         | SignUp => ReasonReact.stringToElement("sign up")

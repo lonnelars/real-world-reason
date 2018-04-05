@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
-    "start": "bsb -make-world -w",
+    "watch": "bsb -make-world -w",
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack -w",
-    "webpack:production": "NODE_ENV=production webpack"
+    "webpack:production": "NODE_ENV=production webpack",
+    "start": "npm run watch & npm run webpack"
   },
   "keywords": [
     "BuckleScript"
@@ -20,6 +21,8 @@
     "reason-react": ">=0.3.4"
   },
   "devDependencies": {
+    "@glennsl/bs-json": "^1.2.0",
+    "bs-fetch": "^0.2.1",
     "bs-platform": "^2.2.3",
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.10"

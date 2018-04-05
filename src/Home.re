@@ -1,8 +1,30 @@
+open DataTypes;
+
 let text = ReasonReact.stringToElement;
+
+let articlePreview = article =>
+  <div key=article.slug className="article-preview">
+    <div className="article-meta">
+      <a href="profile.html"> <img src="http://i.imgur.com/Qr71crq.jpg" /> </a>
+      <div className="info">
+        <a href="" className="author"> (article.author.username |> text) </a>
+        <span className="date"> (article.createdAt |> text) </span>
+      </div>
+      <button className="btn btn-outline-primary btn-sm pull-xs-right">
+        <i className="ion-heart" />
+        (article.favoritesCount |> string_of_int |> text)
+      </button>
+    </div>
+    <a href="" className="preview-link">
+      <h1> (article.title |> text) </h1>
+      <p> (article.description |> text) </p>
+      <span> (text("Read more...")) </span>
+    </a>
+  </div>;
 
 let component = ReasonReact.statelessComponent("Home");
 
-let make = _children => {
+let make = (~articles: State.articleList, _children) => {
   ...component,
   render: _self =>
     <div className="home-page">
@@ -17,39 +39,40 @@ let make = _children => {
           <div className="col-md-9">
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
-                <li className="nav-item">
+                <li key="your-feed" className="nav-item">
                   <a className="nav-link disabled" href="">
                     (text("Your Feed"))
                   </a>
                 </li>
-                <li className="nav-item">
+                <li key="global-feed" className="nav-item">
                   <a className="nav-link active" href="">
                     (text("Global Feed"))
                   </a>
                 </li>
               </ul>
             </div>
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="profile.html">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" />
-                </a>
-                <div className="info">
-                  <a href="" className="author"> (text("Eric Simons")) </a>
-                  <span className="date"> (text("January 20th")) </span>
-                </div>
-                <button
-                  className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart" />
-                  (text("29"))
-                </button>
-              </div>
-              <a href="" className="preview-link">
-                <h1> (text("How to build webapps that scale")) </h1>
-                <p> (text("This is the description for the post.")) </p>
-                <span> (text("Read more...")) </span>
-              </a>
-            </div>
+            <ul>
+              (
+                switch (articles) {
+                | Loading => <p> (text("Loading...")) </p>
+                | Loaded(articlesObject) =>
+                  Array.map(
+                    article => articlePreview(article),
+                    articlesObject.articles,
+                  )
+                  |> ReasonReact.arrayToElement
+                | Error(error) =>
+                  Js.log(error);
+                  <p>
+                    (
+                      text(
+                        "Could not load list of articles. See console for more details.",
+                      )
+                    )
+                  </p>;
+                }
+              )
+            </ul>
           </div>
           <div className="col-md-3">
             <div className="sidebar">

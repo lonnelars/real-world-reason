@@ -1,8 +1,13 @@
-include Page;
+open State;
 
-type state = {currentPage: page};
+open DataTypes;
+
+open Page;
 
 type action =
+  | FetchArticles
+  | ArticlesFetched(articlesObject)
+  | ArticlesFailedToFetch(Js.Promise.error)
   | PathChanged(page);
 
 let component = ReasonReact.reducerComponent("App");
@@ -18,15 +23,49 @@ let initialPage = () =>
 
 let make = _children => {
   ...component,
-  initialState: () => {currentPage: initialPage()},
-  reducer: (action, _state) =>
+  didMount: self => {
+    self.send(FetchArticles);
+    ReasonReact.NoUpdate;
+  },
+  initialState: () => {currentPage: initialPage(), articleList: Loading},
+  reducer: (action, state) =>
     switch (action) {
-    | PathChanged(page) => ReasonReact.Update({currentPage: page})
+    | FetchArticles =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, articleList: Loading},
+        (
+          self =>
+            Js.Promise.(
+              Fetch.fetch(
+                "https://conduit.productionready.io/api/articles?limit=10",
+              )
+              |> then_(Fetch.Response.json)
+              |> then_(json =>
+                   json
+                   |> Decode.articlesObject
+                   |> (
+                     articlesObject =>
+                       self.send(ArticlesFetched(articlesObject))
+                   )
+                   |> resolve
+                 )
+              |> catch(err =>
+                   Js.Promise.resolve(self.send(ArticlesFailedToFetch(err)))
+                 )
+              |> ignore
+            )
+        ),
+      )
+    | ArticlesFetched(articlesObject) =>
+      ReasonReact.Update({...state, articleList: Loaded(articlesObject)})
+    | ArticlesFailedToFetch(error) =>
+      ReasonReact.Update({...state, articleList: Error(error)})
+    | PathChanged(page) => ReasonReact.Update({...state, currentPage: page})
     },
   render: self =>
     ReasonReact.arrayToElement([|
-      <Header currentPage=self.state.currentPage />,
-      <MainContent page=self.state.currentPage />,
+      <Header key="header" currentPage=self.state.currentPage />,
+      <MainContent key="main-content" state=self.state />,
     |]),
   subscriptions: self => [
     Sub(
